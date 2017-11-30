@@ -1,0 +1,38 @@
+* {
+
+	margin: 0px;
+	padding: 0px;
+	font-family: helvetica;
+}
+
+input, textarea {
+
+	padding: 3px;
+}
+
+button {
+
+	cursor: pointer;
+	padding: 3px;
+	border: 1px solid #ccc;
+	background-color: #fff;
+	border-radius: 4px;
+	outline: none;
+}
+
+button:active {
+
+	background-color: #eee;
+}
+
+.wrapper {
+
+	text-align: center;
+	margin: 10px;
+}
+
+.container {
+
+	display: inline-block;
+}
+
