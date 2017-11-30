@@ -6,10 +6,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>VMShop - List</title>
+	<title>vmSHOP - List</title>
 	
 	<link rel="stylesheet" type="text/css" href="CSS/root.css">
-	<link rel="stylesheet" type="text/css" href="CSS/login.css">
 
 	<script type="text/javascript" src="JS/external/jquery.js"></script>
 	<script src="https://use.fontawesome.com/ce5690c480.js"></script>

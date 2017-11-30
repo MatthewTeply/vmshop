@@ -7,7 +7,16 @@
 
 input, textarea {
 
-	padding: 3px;
+	padding: 4px;
+	outline: none;
+	border: 1px solid #aaa;
+}
+
+input:focus, textarea:focus {
+
+	transition: 200ms;
+	border: 1px solid #777;
+	box-shadow: 2px 2px 5px #ccc;
 }
 
 button {
@@ -23,6 +32,18 @@ button {
 button:active {
 
 	background-color: #eee;
+}
+
+.bttn_focus {
+
+	background-color: #288aed;
+	border: 1px solid #2a5682;
+	color: #fff;
+}
+
+.bttn_focus:active {
+
+	background-color: #2a5682;
 }
 
 .wrapper {

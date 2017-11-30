@@ -7,7 +7,7 @@
 <div class="wrapper">
 	<div class="container">
 
-		<h1>VMshop - Počítače</h1>
+		<h1>vmSHOP - Počítače</h1>
 		<?php echo $_SESSION['vmshop_uid']." "; ?>[<a href="users.inc.php?logout">Odhlásit</a>]
 		<br>
 		
@@ -18,7 +18,7 @@
 					<input type="text" name="name" placeholder="Jméno počítače"><br>
 					<input type="text" name="tasks" placeholder="Co je potřeba (oddělit čárkami)"><br>
 					<textarea name="comments" placeholder="Komentáře" cols="80" rows="14"></textarea><br>
-					<button name="setComputer_subm">Vložit</button>
+					<button name="setComputer_subm" class="bttn_focus">Vložit</button>
 				</span>
 			</form>
 		</section>
@@ -27,7 +27,7 @@
 			<h4>Počítače</h4>
 			<span id="computers_list_latest"></span>
 			<span id="computers_list">
-				<?php inc_getComputer(""); ?>
+				<?php inc_getComputer("", "content"); ?>
 			</span>
 		</section>
 

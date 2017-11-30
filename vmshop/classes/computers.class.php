@@ -30,16 +30,27 @@ class Computer {
 			if($opt == "content")
 				echo 
 				"
-				<p><b>".$row['op']."</b> : ".$row['content']." [<i>".$row['cdate']."</i>]</p>
+				<p>[<i>".$row['cdate']."</i>] <b>".$row['op']."</b> : ".$row['content']."</p>
 				";
 		}
 	}
 
 	function showAddons($mid) {
-		echo 
-			"
-			<div class='addons_toggle' id='".$mid."'>
-			".$this->getAddons($mid, "num")." dodatků
+		echo 	
+		"
+			<div class='addons_toggle' id='".$mid."'><b>
+			".$this->getAddons($mid, "num");
+
+		if($this->getAddons($mid, "num") == 1)
+			echo " dodatek";
+		else if($this->getAddons($mid, "num") < 5)
+			echo " dodatky";
+		else
+			echo " dodatků";
+
+		echo
+		" 		
+				</b>
 				<div class='addons_div' id='addons_".$mid."'>";
 					$this->getAddons($mid, "content");
 		echo "
@@ -60,20 +71,6 @@ class Computer {
 
 		$done_string = implode(",", $done_array);
 		$cdate = date("Y:m:d");
-
-		/*
-		TESTING
-
-		echo "<b>Tasks</b><br>";
-		var_dump($tasks_array);
-		echo "<br><b>Done</b><br>";
-		var_dump($done_array);
-
-		echo "<br><b>Tasks</b><br>";
-		echo $tasks;
-		echo "<br><b>Tasks string</b><br>";
-		echo $done_string;
-		*/
 
 		$stmnt = $this->conn->prepare("INSERT INTO computers (name, tasks, done, who, comments, cdate) VALUES (?, ?, ?, ?, ?, ?)");
 		$stmnt->bind_param("ssssss", $name, $tasks, $done_string, $_SESSION['vmshop_uid'], $comments, $cdate);
@@ -151,8 +148,8 @@ class Computer {
 			<p></p>
 			<div class='computer_controls'>
 				<form method='POST' action='computers.inc.php'>
-					<button type='button' class='un_setComputer_subm'>Smazat</button>
 					<input name='id' type='hidden' value=".$row['id'].">
+					<button type='submit' class='un_setComputer_subm' name='un_setComputer_subm'>Smazat</button>
 				</form>
 				<button type='button' class='hideComputer' value=".$row['id'].">";
 			
@@ -162,7 +159,14 @@ class Computer {
 				echo "Schovat";
 
 			echo"</button>
-			<button>Přidat dodatek</button>
+			<button type='button' class='addon_form_toggle' value=".$row['id'].">Přidat dodatek &#9660;</button>
+			<br>
+			<form method='POST' action='computers.inc.php' id='addon_form_".$row['id']."' style='display:none;'>
+				<input type='hidden' name='mid' value=".$row['id'].">
+				<textarea name='content' placeholder='Dodatek...' cols='77' rows='5'></textarea>
+				<br>
+				<button type='submit' class='setAddon_subm bttn_focus' name='setAddon_subm'>Poslat</button>
+			</form>
 			</div>
 			</article>
 			";
@@ -230,7 +234,12 @@ class Computer {
 
 		$stmnt->execute();
 
-		return $row['name'];
+		$stmnt = $this->conn->prepare("DELETE FROM addons WHERE mid=?");
+		$stmnt->bind_param("i", $id);
+
+		$stmnt->execute();
+
+		header("Location: index.php?del_succ=".$row['name']."");
 	}
 
 	public function toggleComputer($id) {
@@ -261,7 +270,7 @@ class Computer {
 
 		$cdate = date("Y:m:d");
 
-		$stmnt = $this->conn->prepare("INSERT INTO addons (mid, content, op, cdate)");
+		$stmnt = $this->conn->prepare("INSERT INTO addons (mid, content, op, cdate) VALUES (?, ?, ?, ?)");
 		$stmnt->bind_param("isss", $mid, $content, $_SESSION['vmshop_uid'], $cdate);
 
 		$stmnt->execute();

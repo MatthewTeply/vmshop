@@ -27,6 +27,11 @@ function inc_toggleComputer($id) {
 	echo $obj->toggleComputer($id);
 }
 
+function inc_setAddon($mid, $content) {
+	$obj = new Computer;
+	$obj->setAddon($mid, $content);
+}
+
 //Ajax (_call)
 if(isset($_POST['getComputer_call']))
 	inc_getComputer($_POST['id'], $_POST['opt']);
@@ -43,6 +48,9 @@ if(isset($_POST['setComputer_subm']))
 
 if(isset($_POST['un_setComputer_subm']))
 	inc_un_setComputer($_POST['id']);
+
+if(isset($_POST['setAddon_subm']))
+	inc_setAddon($_POST['mid'], $_POST['content']);
 
 //PHP (GET)
 	
