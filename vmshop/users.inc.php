@@ -17,6 +17,21 @@ function inc_un_getUser($username) {
 	$obj->un_getUser($username);
 }
 
+function inc_showUsers() {
+	$obj = new User;
+	$obj->showUsers();
+}
+
+function inc_getInfo_user($id, $opt) {
+	$obj = new User;
+	return $obj->getInfo_user($id, $opt);
+}
+
+function inc_getId_user($username) {
+	$obj = new User;
+	return $obj->getId_user($username);
+}
+
 //Ajax (_call)
 
 //PHP (_subm)

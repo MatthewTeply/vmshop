@@ -2,14 +2,14 @@
 
 require('classes/computers.class.php');
 
-function inc_setComputer($name, $tasks, $comments) {
+function inc_setComputer($name, $tasks, $comments, $who) {
 	$obj = new Computer;
-	$obj->setComputer($name, $tasks, $comments);
+	$obj->setComputer($name, $tasks, $comments, $who);
 }
 
-function inc_getComputer($id, $opt) {
+function inc_getComputer($id, $opt, $user) {
 	$obj = new Computer;
-	$obj->getComputer($id, $opt);
+	$obj->getComputer($id, $opt, $user);
 }
 
 function inc_updateComputer($id, $task_name) {
@@ -44,7 +44,7 @@ if(isset($_POST['toggleComputer_call']))
 
 //PHP (_subm)
 if(isset($_POST['setComputer_subm']))
-	inc_setComputer($_POST['name'], $_POST['tasks'], $_POST['comments']);
+	inc_setComputer($_POST['name'], $_POST['tasks'], $_POST['comments'], $_POST['who']);
 
 if(isset($_POST['un_setComputer_subm']))
 	inc_un_setComputer($_POST['id']);

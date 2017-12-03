@@ -16,9 +16,12 @@
 </head>
 <body>
 
-<?php if (!isset($_SESSION['vmshop_uid'])): include 'pages/login.php'; ?>
-<?php else: include 'pages/list.php'; ?>
-<?php endif ?>
+<?php 
+if(!isset($_SESSION['vmshop_uid']))
+	include 'pages/login.php';
+else 
+	include 'pages/list.php';
+?>
 
 </body>
 </html>

@@ -12,6 +12,35 @@ class User {
 		$this->conn = DBConnection::getDB();
 	}
 
+	public function getInfo_user($id, $opt) {
+
+		$stmnt = $this->conn->prepare("SELECT * FROM users WHERE id=?");
+		$stmnt->bind_param("i", $id);
+
+		$stmnt->execute();
+		$results = $stmnt->get_result();
+
+		$row = $results->fetch_assoc();
+
+		if($opt == "pwd")
+			exit("Nelze žádat o heslo!");
+
+		return $row[$opt];
+	}
+
+	public function getId_user($username) {
+
+		$stmnt = $this->conn->prepare("SELECT * FROM users WHERE uid=?");
+		$stmnt->bind_param("s", $username);
+
+		$stmnt->execute();
+		$results = $stmnt->get_result();
+
+		$row = $results->fetch_assoc();
+
+		return $row['id'];
+	}
+
 	//SIGNUP
 	public function setUser($username, $password) {
 
@@ -63,5 +92,20 @@ class User {
 
 		header("Location: index.php?logout&uid=".$username);
 		return true;
+	}
+
+	//SHOW
+	public function showUsers() {
+
+		$stmnt = $this->conn->prepare("SELECT * FROM users WHERE uid!=?");
+		$stmnt->bind_param("s", $_SESSION['vmshop_uid']);
+
+		$stmnt->execute();
+		$results = $stmnt->get_result();
+
+		while($row = $results->fetch_assoc()) {
+
+			echo "<a href='index.php?usr=".$row['id']."'>".$row['uid']."</a>";
+		}
 	}
 }

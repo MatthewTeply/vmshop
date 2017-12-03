@@ -52,6 +52,7 @@ section article div {
 	padding: 5px;
 	max-width: 500px;
 	word-wrap: break-word;
+	border: 1px solid #dadada;
 }
 
 section article p {
@@ -67,11 +68,29 @@ section article i {
 	font-size: 13px;
 }
 
+section article ul {
+
+	list-style: none;
+	border: 1px solid #dadada;
+}
+
+section article ul li {
+
+	background-color: #fff;
+	padding: 2px;
+}
+
+section article ul li:nth-child(odd) {
+
+	background-color: #eee;
+}
+
 .computer_controls {
 
 	display: block;
 	background-color: #eee;
 	margin: -5px;
+	border: none;
 	border-top: 1px solid #ccc;
 	max-width: none;
 	width: 100%;

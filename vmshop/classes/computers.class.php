@@ -59,7 +59,9 @@ class Computer {
 			";
 	}
 
-	public function setComputer($name, $tasks, $comments) {
+	public function setComputer($name, $tasks, $comments, $who) {
+
+		include_once 'users.inc.php';
 
 		$tasks_array = explode(",", $tasks);
 		$done_array = array();
@@ -73,19 +75,32 @@ class Computer {
 		$cdate = date("Y:m:d");
 
 		$stmnt = $this->conn->prepare("INSERT INTO computers (name, tasks, done, who, comments, cdate) VALUES (?, ?, ?, ?, ?, ?)");
-		$stmnt->bind_param("ssssss", $name, $tasks, $done_string, $_SESSION['vmshop_uid'], $comments, $cdate);
+		
+		if(!empty($who))
+			$stmnt->bind_param("ssssss", $name, $tasks, $done_string, $who, $comments, $cdate);
+		else
+			$stmnt->bind_param("ssssss", $name, $tasks, $done_string, $_SESSION['vmshop_uid'], $comments, $cdate);
 
 		$stmnt->execute();
 
-		header("Location: index.php?posted=".$name."");
+		if(!empty($who))
+			header("Location: index.php?posted=".$name."&usr=".inc_getId_user($who)."");
+		else
+			header("Location: index.php?posted=".$name."");
+		
 		return true;
 	}
 
-	public function getComputer($id, $opt) {
+	public function getComputer($id, $opt, $user) {
 
 		if(!empty($id)) {
 			$stmnt = $this->conn->prepare("SELECT * FROM computers WHERE id=?");
 			$stmnt->bind_param("i", $id);
+		}
+
+		else if(!empty($user)) {
+			$stmnt = $this->conn->prepare("SELECT * FROM computers WHERE who=? ORDER BY id desc");
+			$stmnt->bind_param("s", $user);
 		}
 		
 		else {
@@ -127,14 +142,23 @@ class Computer {
 			$tasks_array = explode(",", $row['tasks']);
 			$done_array = explode(",", $row['done']);
 
-			echo "<p><b>Co je potřeba</b></p>";
+			echo 
+			"
+			<p><b>Co je potřeba</b></p>
+			<ul>
+			";
 			for ($i = 0; $i < sizeof($tasks_array); $i++) {
 
 				if($done_array[$i] == 1)
-					echo "[<input type='checkbox' class='task_done' checked='true' id='".$row['id']."-".$tasks_array[$i]."'>] - ".$tasks_array[$i]."<br>";
+					echo "<li>[<input type='checkbox' class='task_done' checked='true' id='".$row['id']."-".$tasks_array[$i]."'>] - ".$tasks_array[$i]."</li>";
 				else
-					echo "[<input type='checkbox' class='task_done' id='".$row['id']."-".$tasks_array[$i]."'>] - ".$tasks_array[$i]."<br>";
+					echo "<li>[<input type='checkbox' class='task_done' id='".$row['id']."-".$tasks_array[$i]."'>] - ".$tasks_array[$i]."</li>";
 			}
+
+			echo 
+			"
+			</ul>
+			";
 
 			if(!empty($row['comments']))
 				echo "<p><b>Komentáře</b></p><div>".$row['comments']."</div>";
@@ -147,18 +171,21 @@ class Computer {
 			
 			<p></p>
 			<div class='computer_controls'>
-				<form method='POST' action='computers.inc.php'>
-					<input name='id' type='hidden' value=".$row['id'].">
-					<button type='submit' class='un_setComputer_subm' name='un_setComputer_subm'>Smazat</button>
-				</form>
-				<button type='button' class='hideComputer' value=".$row['id'].">";
-			
-			if($row['hidden'] == 1)
-				echo "Ukázat";
-			else
-				echo "Schovat";
 
-			echo"</button>
+			";
+
+			if(isset($_GET['usr']) && $_GET['usr'] == inc_getInfo_user($row['who'], "uid") || !isset($_GET['usr']))
+				echo 
+				"
+					<form method='POST' action='computers.inc.php'>
+						<input name='id' type='hidden' value=".$row['id'].">
+						<button type='submit' class='un_setComputer_subm' name='un_setComputer_subm'>Smazat</button>
+					</form>
+				";
+
+			echo 
+			"
+				<button type='button' class='hideComputer' value=".$row['id'].">Schovat/Ukázat</button>
 			<button type='button' class='addon_form_toggle' value=".$row['id'].">Přidat dodatek &#9660;</button>
 			<br>
 			<form method='POST' action='computers.inc.php' id='addon_form_".$row['id']."' style='display:none;'>
