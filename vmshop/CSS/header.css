@@ -1,0 +1,133 @@
+header {
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	text-align: left;
+	box-shadow: 0px -1px 10px #000;
+	background-color: #0091DB;
+	z-index: 3;
+	color: #fff;
+}
+
+header img {
+
+	margin: 3px;
+	margin-bottom: 0px;
+	display: inline-block;
+	margin-left: 10px;
+	width: 60px;
+}
+
+header a {
+
+	color: #fff;
+}
+
+header a:hover {
+
+	text-decoration: underline;
+}
+
+header h3 {
+
+	display: inline-block;
+	margin-left: 5px;
+	padding-bottom: 4px;
+}
+
+header ul {
+
+	position: absolute;
+	top: 13px;
+	right: 0px;
+	list-style: none;
+}
+
+header ul li {
+
+	float: left;
+	margin-right: 20px;
+}
+
+header ul li i {
+
+	cursor: pointer;
+}
+
+.logout {
+
+	border: 1px solid #fff;
+	padding: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+	color: #fff;
+	border-radius: 3px;
+}
+
+.logout:hover {
+
+	background-color: #fff;
+	color: #0091DB;
+	text-decoration: none;
+}
+
+#notification_div, #users_div {
+
+	position: fixed;
+	display: none;
+	top: 54px;
+	border: 1px solid var(--blue);
+	border-radius: 3px;
+	padding: 4px;
+	background-color: rgba(0, 145, 219, 0.8);
+	z-index: 3;
+	color: #fff;
+}
+
+#notification_div {
+
+	right: 212px;
+}
+
+#users_div {
+
+	right: 175px;
+}
+
+#users_div a, #notification_div a {
+
+	font-weight: bold;
+	color: #fff;
+}
+
+#users_div p, #notification_div p {
+
+	padding: 4px;
+	border-left: 3px solid #ccc;
+	padding-left: 6px;
+}
+
+#notification_div p:nth-child(odd) {
+
+	border-left: 3px solid #fff;
+}
+
+#notification_div svg, #user_div svg {
+
+	position: absolute;
+	top: -23px;
+	right: 0px;
+}
+
+.arrow_up {
+	position: absolute;
+	top: -8px;
+	right: 2px;
+  	width: 0; 
+  	height: 0; 
+  	border-left: 8px solid transparent;
+  	border-right: 8px solid transparent;
+  	border-bottom: 8px solid rgba(0, 145, 219, 0.8);
+}

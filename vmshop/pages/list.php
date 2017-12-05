@@ -5,16 +5,12 @@
 
 <link rel="stylesheet" type="text/css" href="CSS/list.css">
 
+<?php include 'pages/header.php'; ?>
+
 <div class="wrapper">
 	<div class="container">
 
-		<h1>vmSHOP - Databáze počítačů</h1>
-
-		<?php if (!isset($_GET['usr'])): ?>
-			<?php echo $_SESSION['vmshop_uid']." "; ?>[<a href="users.inc.php?logout">Odhlásit</a>]
-			<br>
-			
-			<?php inc_showUsers(); ?>
+		<?php if (!isset($_GET['usr']) || $_GET['usr'] == inc_getId_user($_SESSION['vmshop_uid'])): ?>
 
 			<section>
 				<h4>Vytvořit</h4>
@@ -36,12 +32,14 @@
 					<?php inc_getComputer("", "content", ""); ?>
 				</span>
 			</section>
-		<?php else: ?>
+		<?php endif ?>
 
-			<p><?php echo inc_getInfo_user($_GET['usr'], "uid"); ?></p>
+		<?php if (isset($_GET['usr']) && $_GET['usr'] != inc_getId_user($_SESSION['vmshop_uid'])): ?>
+			
+			<h1><?php echo inc_getInfo_user($_GET['usr'], "uid"); ?></h1>
 
 			<section>
-				<h4>Vytvořit</h4>
+				<h4>Vytvořit pro <?php echo inc_getInfo_user($_GET['usr'], "uid"); ?></h4>
 				<form id="setComputer_form" method="POST" action="computers.inc.php">
 					<span>
 						<input type="text" name="name" placeholder="Jméno počítače"><br>

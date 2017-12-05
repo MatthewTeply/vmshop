@@ -27,8 +27,6 @@ $(document).ready(function() {
 		var id = info[0];
 		var task_name = info[1];
 
-		//alert("id : " + id + "\nname : " + task_name);
-	
 		$.ajax({
 
 			method: "POST",
@@ -61,5 +59,47 @@ $(document).ready(function() {
 
 		$("#computer_contents_" + id).toggle();
 	});
+
+	var notifications_init_number = $("#notifications_number").val();
+	var notifications_number_new = 0;
+
+	var notifications_new = 0;
+	var notifications_content = "";
+
+	//GET NOTIFICATIONS
+	setInterval(function() {
+
+		$.ajax({
+
+			method: "POST",
+			url: "computers.inc.php",
+			data: {getNotifications_call:true, opt:"call", number:notifications_init_number},
+			success: function(response) {
+
+				$.ajax({
+
+					method: "POST",
+					url: "computers.inc.php",
+					data: {getNotificationsNumber_call:true, number:notifications_init_number},
+					success: function(response) {
+
+						notifications_new = response;
+					}			
+				});
+
+				if(notifications_new != 0) {
+					notifications_number_new = notifications_new;
+					$("#notification_div_content_new").html(notifications_content);
+					notifications_init_number = parseInt(notifications_init_number) + parseInt(notifications_new);
+				}
+
+				notifications_content = response;
+
+				console.log(notifications_number_new);
+				console.log(notifications_init_number);
+			}
+		});
+
+	}, 5000)
 
 });

@@ -12,6 +12,19 @@ class Computer {
 		$this->conn = DBConnection::getDB();
 	}
 
+	public function getInfo_computer($id, $opt) {
+
+		$stmnt = $this->conn->prepare("SELECT * FROM computers WHERE id=?");
+		$stmnt->bind_param("i", $id);
+
+		$stmnt->execute();
+		$results = $stmnt->get_result();
+
+		$row = $results->fetch_assoc();
+
+		return $row[$opt];
+	}
+
 	public function getAddons($mid, $opt) {
 
 		$stmnt = $this->conn->prepare("SELECT * FROM addons WHERE mid=?");
@@ -59,9 +72,19 @@ class Computer {
 			";
 	}
 
+	public function setNotification($type, $item_id, $username) {
+
+		$stmnt = $this->conn->prepare("INSERT INTO notifications (type, item_id, uid) VALUES (?, ?, ?)");
+		$stmnt->bind_param("sis", $type, $item_id, $username);
+
+		$stmnt->execute();
+	}
+
 	public function setComputer($name, $tasks, $comments, $who) {
 
 		include_once 'users.inc.php';
+
+		//SET COMPUTER
 
 		$tasks_array = explode(",", $tasks);
 		$done_array = array();
@@ -83,6 +106,22 @@ class Computer {
 
 		$stmnt->execute();
 
+		//GET COMPUTER
+
+		$stmnt = $this->conn->prepare("SELECT * FROM computers WHERE name=? AND who=?");
+		$stmnt->bind_param("ss", $name, $_SESSION['vmshop_uid']);
+
+		$stmnt->execute();
+		$results = $stmnt->get_result();
+
+		$row = $results->fetch_assoc();
+
+		//SET NOTIFICATION
+
+		$this->setNotification("c", $row['id'], $_SESSION['vmshop_uid']);
+
+		//REDIRECT
+
 		if(!empty($who))
 			header("Location: index.php?posted=".$name."&usr=".inc_getId_user($who)."");
 		else
@@ -92,6 +131,8 @@ class Computer {
 	}
 
 	public function getComputer($id, $opt, $user) {
+
+		include_once 'users.inc.php';
 
 		if(!empty($id)) {
 			$stmnt = $this->conn->prepare("SELECT * FROM computers WHERE id=?");
@@ -112,9 +153,6 @@ class Computer {
 		$results = $stmnt->get_result();
 
 		while($row = $results->fetch_assoc()) {
-
-			$cookie_name = "computer_contents_".$row['id']."_hidden";
-
 
 			echo
 			"
@@ -174,8 +212,8 @@ class Computer {
 
 			";
 
-			if(isset($_GET['usr']) && $_GET['usr'] == inc_getInfo_user($row['who'], "uid") || !isset($_GET['usr']))
-				echo 
+			if(isset($_GET['usr']) && $_GET['usr'] == inc_getId_user($_SESSION['vmshop_uid']) || !isset($_GET['usr']))
+				echo
 				"
 					<form method='POST' action='computers.inc.php'>
 						<input name='id' type='hidden' value=".$row['id'].">
@@ -225,15 +263,17 @@ class Computer {
 
 		if($done_array[$key] == "0")
 			$done_array[$key] = "1";
-		else
+		else 
 			$done_array[$key] = "0";
 
 		$done_string = implode(",", $done_array);
 
 		if(in_array("0", $done_array))
 			$finished = 0;
-		else
+		else {
 			$finished = 1;
+			$this->setNotification("cf", $id, $_SESSION['vmshop_uid']);
+		}
 
 		$stmnt = $this->conn->prepare("UPDATE computers SET done=?, finished=? WHERE id=?");
 		$stmnt->bind_param("sii", $done_string, $finished, $id);			
@@ -244,6 +284,8 @@ class Computer {
 	}
 
 	public function un_setComputer($id) {
+
+		//SELECT COMPUTER
 
 		$stmnt = $this->conn->prepare("SELECT * FROM computers WHERE id=?");
 		$stmnt->bind_param("i", $id);
@@ -256,12 +298,23 @@ class Computer {
 		if($row['who'] != $_SESSION['vmshop_uid'])
 			exit("Nemůžete smazat příspěvky jiného uživatele! [<a href='index.php'>Zpět</a>]");
 
+		//DELETE COMPUTER
+
 		$stmnt = $this->conn->prepare("DELETE FROM computers WHERE id=?");
 		$stmnt->bind_param("i", $id);
 
 		$stmnt->execute();
 
+		//DELETE ADDONS
+
 		$stmnt = $this->conn->prepare("DELETE FROM addons WHERE mid=?");
+		$stmnt->bind_param("i", $id);
+
+		$stmnt->execute();
+
+		//DELETE NOTIFICATIONS
+
+		$stmnt = $this->conn->prepare("DELETE FROM notifications WHERE item_id=?");
 		$stmnt->bind_param("i", $id);
 
 		$stmnt->execute();
@@ -302,6 +355,59 @@ class Computer {
 
 		$stmnt->execute();
 
+		//SET NOTIFICATION
+
+		$this->setNotification("a", $mid, $_SESSION['vmshop_uid']);
+
 		header("Location: index.php");
+	}
+
+	public function getNotificationsNumber($number) {
+
+		//GET NUMBER
+		$stmnt = $this->conn->prepare("SELECT * FROM notifications");
+
+		$stmnt->execute();
+		$results = $stmnt->get_result();
+
+		$numRows = $results->num_rows;
+
+		$numNewRows = $numRows - $number;
+
+		return $numNewRows;
+	}
+
+	public function getNotifications($opt, $number) {
+
+		include_once 'users.inc.php';
+
+		$numNewRows = $this->getNotificationsNumber($number);
+
+		//GET NOTIFICATIONS
+		if(empty($number)) {
+			$stmnt = $this->conn->prepare("SELECT * FROM notifications ORDER BY id desc");
+		}
+		else {
+			$stmnt = $this->conn->prepare("SELECT * FROM notifications ORDER BY id desc LIMIT ?");
+			$stmnt->bind_param("i", $numNewRows);
+		}
+
+		$stmnt->execute();
+		$results = $stmnt->get_result();
+		
+		if($opt == "initial")
+			echo "<input type='hidden' id='notifications_number' value='".$this->getNotificationsNumber(0)."'>";
+
+		while($row = $results->fetch_assoc()) {
+
+			$mid = inc_getId_user($row['uid']);
+
+			if($row['type'] == "c")
+				echo "<p><a href='index.php?usr=".$mid."'>".$row['uid']."</a> přidal počítač <a href='index.php?usr=".$mid."#computer_".$row['item_id']."'> ".$this->getInfo_computer($row['item_id'], "name")."</a></p>";
+			else if($row['type'] == "cf")
+				echo "<p><a href='index.php?usr=".$mid."'>".$row['uid']."</a> dokončil počítač <a href='index.php?usr=".$mid."#computer_".$row['item_id']."'> ".$this->getInfo_computer($row['item_id'], "name")."</a></p>";
+			else
+				echo "<p><a href='index.php?usr=".$mid."'>".$row['uid']."</a> přidal dodatek k <a href='index.php?usr=".$mid."#computer_".$row['item_id']."'> ".$this->getInfo_computer($row['item_id'], "name")."</a></p>";
+		}
 	}
 }

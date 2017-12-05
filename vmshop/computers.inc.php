@@ -1,5 +1,6 @@
 <?php
 
+error_reporting(0); 
 require('classes/computers.class.php');
 
 function inc_setComputer($name, $tasks, $comments, $who) {
@@ -32,6 +33,16 @@ function inc_setAddon($mid, $content) {
 	$obj->setAddon($mid, $content);
 }
 
+function inc_getNotifications($opt, $number) {
+	$obj = new Computer;
+	echo $obj->getNotifications($opt, $number);
+}
+
+function inc_getNotificationsNumber($number) {
+	$obj = new Computer;
+	echo $obj->getNotificationsNumber($number);
+}
+
 //Ajax (_call)
 if(isset($_POST['getComputer_call']))
 	inc_getComputer($_POST['id'], $_POST['opt']);
@@ -41,6 +52,12 @@ if(isset($_POST['updateComputer_call']))
 
 if(isset($_POST['toggleComputer_call']))
 	inc_toggleComputer($_POST['id']);
+
+if(isset($_POST['getNotifications_call']))
+	inc_getNotifications($_POST['opt'], $_POST['number']);
+
+if(isset($_POST['getNotificationsNumber_call']))
+	inc_getNotificationsNumber($_POST['number']);
 
 //PHP (_subm)
 if(isset($_POST['setComputer_subm']))
