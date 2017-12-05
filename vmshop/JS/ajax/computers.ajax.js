@@ -59,44 +59,53 @@ $(document).ready(function() {
 
 		$("#computer_contents_" + id).toggle();
 	});
-
-	var notifications_init_number = $("#notifications_number").val();
-	var notifications_number_new = 0;
-
-	var notifications_new = 0;
-	var notifications_content = "";
-
+	
 	//GET NOTIFICATIONS
+
+	var init_number_send = $("#notifications_number").val();
+	var init_number_notify = init_number_send;
+
+	var number_notify = init_number_notify;
+
+	console.log(init_number_send);
+
+	$("#notification_toggle").click(function() {
+
+		number_notify = init_number_notify;
+		$("#notification_new").html("");
+	});
+
 	setInterval(function() {
 
 		$.ajax({
 
 			method: "POST",
 			url: "computers.inc.php",
-			data: {getNotifications_call:true, opt:"call", number:notifications_init_number},
+			data: {getNotificationsNumber_call:true, number:init_number_notify},
 			success: function(response) {
 
-				$.ajax({
 
-					method: "POST",
-					url: "computers.inc.php",
-					data: {getNotificationsNumber_call:true, number:notifications_init_number},
-					success: function(response) {
-
-						notifications_new = response;
-					}			
-				});
-
-				if(notifications_new != 0) {
-					notifications_number_new = notifications_new;
-					$("#notification_div_content_new").html(notifications_content);
-					notifications_init_number = parseInt(notifications_init_number) + parseInt(notifications_new);
+				if(response > 0) {
+					init_number_notify = parseInt(init_number_notify) + parseInt(response);
+					$("#notification_new").html(init_number_notify - number_notify);
+					console.log(response);
 				}
 
-				notifications_content = response;
+				else
+					init_number_notify = parseInt(init_number_notify) + parseInt(response);
+				
+				console.log("Response : " + response);
+			} 
+		});
 
-				console.log(notifications_number_new);
-				console.log(notifications_init_number);
+		$.ajax({
+
+			method: "POST",
+			url: "computers.inc.php",
+			data: {getNotifications_call:true, opt:"call", number:init_number_send},
+			success: function(response) {
+
+				$("#notification_div_content_new").html(response);
 			}
 		});
 

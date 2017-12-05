@@ -49,6 +49,7 @@ header ul li {
 
 	float: left;
 	margin-right: 20px;
+	position: relative;
 }
 
 header ul li i {
@@ -75,9 +76,10 @@ header ul li i {
 
 #notification_div, #users_div {
 
-	position: fixed;
+	position: absolute;
 	display: none;
-	top: 54px;
+	top: 40px;
+	right: -4px;
 	border: 1px solid var(--blue);
 	border-radius: 3px;
 	padding: 4px;
@@ -88,12 +90,14 @@ header ul li i {
 
 #notification_div {
 
-	right: 212px;
+	min-width: 350px;
+	max-width: 400px;
 }
 
 #users_div {
 
-	right: 175px;
+	min-width: 130px;
+	max-width: 200px;
 }
 
 #users_div a, #notification_div a {
@@ -105,13 +109,13 @@ header ul li i {
 #users_div p, #notification_div p {
 
 	padding: 4px;
-	border-left: 3px solid #ccc;
 	padding-left: 6px;
+	border-bottom: 1px solid #fff;
 }
 
-#notification_div p:nth-child(odd) {
+.fa-user {
 
-	border-left: 3px solid #fff;
+	font-size: 19px;
 }
 
 #notification_div svg, #user_div svg {
@@ -130,4 +134,9 @@ header ul li i {
   	border-left: 8px solid transparent;
   	border-right: 8px solid transparent;
   	border-bottom: 8px solid rgba(0, 145, 219, 0.8);
+}
+
+#notification_toggle {
+
+	transform: translate(0px, -4px);
 }

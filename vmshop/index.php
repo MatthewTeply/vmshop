@@ -7,6 +7,8 @@
 <html>
 <head>
 	<title>vmSHOP - List</title>
+
+	<link rel="shortcut icon" type="image/png" href="imgs/logo_01.png"/>
 	
 	<link rel="stylesheet" type="text/css" href="CSS/root.css">
 	<link rel="stylesheet" type="text/css" href="CSS/css/font-awesome.min.css">

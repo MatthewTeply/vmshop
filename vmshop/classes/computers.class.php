@@ -385,11 +385,12 @@ class Computer {
 
 		//GET NOTIFICATIONS
 		if(empty($number)) {
-			$stmnt = $this->conn->prepare("SELECT * FROM notifications ORDER BY id desc");
+			$stmnt = $this->conn->prepare("SELECT * FROM notifications WHERE uid != ? ORDER BY id desc");
+			$stmnt->bind_param("s", $_SESSION['vmshop_uid']);
 		}
 		else {
-			$stmnt = $this->conn->prepare("SELECT * FROM notifications ORDER BY id desc LIMIT ?");
-			$stmnt->bind_param("i", $numNewRows);
+			$stmnt = $this->conn->prepare("SELECT * FROM notifications WHERE uid != ? ORDER BY id desc LIMIT ?");
+			$stmnt->bind_param("si", $_SESSION['vmshop_uid'], $numNewRows);
 		}
 
 		$stmnt->execute();
