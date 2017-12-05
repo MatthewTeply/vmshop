@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Počítač: 127.0.0.1
--- Vytvořeno: Čtv 30. lis 2017, 17:32
+-- Vytvořeno: Úte 05. pro 2017, 15:04
 -- Verze serveru: 10.1.19-MariaDB
 -- Verze PHP: 5.6.28
 
@@ -39,7 +39,10 @@ CREATE TABLE `addons` (
 --
 
 INSERT INTO `addons` (`id`, `mid`, `content`, `op`, `cdate`) VALUES
-(1, 9, 'Testovy dodatek', 'Mates', '2017-11-30');
+(4, 34, 'ÄŒekÃ¡m na softy', 'TestovÃ½ uÅ¾ivatel', '2017-12-01'),
+(5, 34, 'MusÃ­ bÃ½t do hodiny hotovo', 'Mates', '2017-12-01'),
+(6, 39, 'nenÃ­ 500 GB v bazaru', 'Mates', '2017-12-01'),
+(9, 34, 'TestovÃ½ dodatek', 'TestovÃ½ uÅ¾ivatel', '2017-12-04');
 
 -- --------------------------------------------------------
 
@@ -64,8 +67,33 @@ CREATE TABLE `computers` (
 --
 
 INSERT INTO `computers` (`id`, `name`, `tasks`, `done`, `who`, `comments`, `cdate`, `finished`, `hidden`) VALUES
-(7, 'PC Lynx', 'hdd,ram,vyfoukat,odvirovat,zÃ¡lohovat D', '1,1,1,1,1', 'Mates', 'ZÃ¡lohovat data na D pÅ™es acronis', '2017-11-29', 1, 1),
-(9, 'Dell PC', 'hdd,ram,odvirovat,softy', '1,1,1,0', 'Mates', 'Nemazat D!', '2017-11-30', 0, 1);
+(34, 'Hal 3000', 'ram,hdd,softy,odinstalovat avast', '1,1,1,1', 'TestovÃ½ uÅ¾ivatel', 'MusÃ­ bÃ½t hotovÃ½ dneska!', '2017-12-01', 1, 0),
+(39, 'HP Probook 4730s', 'vadnÃ½ disk,vÃ½mÄ›na 500GB,softy', '1,1,1', 'Mates', 'instalace win 7 + update', '2017-12-01', 1, 0),
+(63, 'Lenovo Thinkpad', 'ram,hdd', '1,1', 'Mates', '', '2017-12-04', 1, 0),
+(79, 'Acer Aspire', 'hdd,ram,softy', '0,0,0', 'TestovÃ½ uÅ¾ivatel', '', '2017-12-04', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `type` text NOT NULL,
+  `item_id` int(11) DEFAULT NULL,
+  `uid` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Vypisuji data pro tabulku `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `type`, `item_id`, `uid`) VALUES
+(10, 'a', 34, 'TestovÃ½ uÅ¾ivatel'),
+(28, 'c', 63, 'Mates'),
+(31, 'cf', 63, 'Mates'),
+(79, 'c', 79, 'TestovÃ½ uÅ¾ivatel');
 
 -- --------------------------------------------------------
 
@@ -84,7 +112,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uid`, `pwd`) VALUES
-(1, 'Mates', '$2y$10$Y7cOHK71OGXKh6kfQvtiQ.a.yi8/fTbI475Sx1hCQF.xCuL9FZHAe');
+(1, 'Mates', '$2y$10$Y7cOHK71OGXKh6kfQvtiQ.a.yi8/fTbI475Sx1hCQF.xCuL9FZHAe'),
+(3, 'TestovÃ½ uÅ¾ivatel', '$2y$10$8hfvLy.SZsh7t0DVeGtR6uFgAhCSi9LgJooDqEYfCJmI.VI7G8gbC');
 
 --
 -- Klíče pro exportované tabulky
@@ -103,6 +132,12 @@ ALTER TABLE `computers`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Klíče pro tabulku `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Klíče pro tabulku `users`
 --
 ALTER TABLE `users`
@@ -116,17 +151,22 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pro tabulku `addons`
 --
 ALTER TABLE `addons`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT pro tabulku `computers`
 --
 ALTER TABLE `computers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+--
+-- AUTO_INCREMENT pro tabulku `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 --
 -- AUTO_INCREMENT pro tabulku `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
